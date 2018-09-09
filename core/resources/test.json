@@ -14,5 +14,10 @@
             "video"
         ]
     },
-    "script": "var aElements = document.querySelectorAll('a');\r\n  var aArray = [];\r\n\r\n  if (aElements == null)\r\n      return aArray;\r\n\r\n  for (var i = 0; i < aElements.length; i++)\r\n      aArray.push(aElements[i].href);\r\n  \r\n  return aArray;"
+    "script": "var aElements = document.querySelectorAll('a');\r\n  var aArray = [];\r\n\r\n  if (aElements == null)\r\n      return aArray;\r\n\r\n  for (var i = 0; i < aElements.length; i++)\r\n      aArray.push(aElements[i].href);\r\n  \r\n  return aArray;",
+    "show" : [
+    	 "headers.request",
+    	"response.content.rendered"
+    	
+    	]
 }
