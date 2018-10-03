@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Home</title>
+        <meta charset='utf-8'/>
+    </head>
+    <body>
+        <h1>Welcome to Chrome headless web service</h1>
+        <p>This tool provides crawler to connect a specific url or emulate an html page via Chromium by just sending a POST request. Navigation behavior is like surfing on Firefox or Chrome. Script, ajax connection and so on is really simulated. As response, it sends the rendered page.</p>
+        <ul>
+            <li><a href="<%= documentationPath %>">Documentation</a></li>
+            <li><a href="<%= testPath %>">Test</a></li>
+        </ul>
+        
+        <h1 style='color:red'>/!\ Not use in one of these cases :</h1>
+        <ul>
+            <li>Data to retrieve on page does not need to emulate a script</li>
+            <li>Data to retrieve on page needs to emulate a script but Java ScriptEngine (or other script engine) is enough to do it</li>
+            <li>There is no protection by script on the page</li>
+        </ul>
+        <p>Indeed, one instance of Chromium can used 130Mo of RAM or more depending the page. Also, one page is ever an instance of Chromium even though there is only one window. Moreover, delay response is enough significant because of rendering page.</p>
+    </body>
+</html>

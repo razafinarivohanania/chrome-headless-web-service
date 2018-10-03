@@ -1,24 +1,61 @@
+'use strict';
+
+/**
+ * Construct response to send to client
+ * 
+ * @class
+ */
 module.exports = class ResponseBuilder {
+
+    /**
+     * Valid fields to respond
+     * 
+     * @public
+     * 
+     * @static
+     * 
+     * @returns {Array}
+     */
     static get VALID_FIELDS() {
         return [
             'status',
             'headers',
             'headers.request',
             'headers.response',
+            'urls',
+            'urls.connected',
+            'urls.skipped',
             'response',
             'response.cookies',
             'response.script',
             'response.content',
             'response.content.notRendered',
-            'response.content.rendered'
+            'response.content.rendered',
         ];
     }
 
+    /**
+     * Constructor needs page and request
+     * 
+     * @public
+     * 
+     * @constructor
+     * 
+     * @param {Page} page 
+     * @param {Request} req 
+     */
     constructor(page, req) {
         this.page = page;
         this.req = req;
     }
 
+    /**
+     * Build the response JSON depending the fields to show
+     * 
+     * @public
+     * 
+     * @returns {Object}
+     */
     build() {
         this.response = {};
         this.fullResponse = {
@@ -26,6 +63,10 @@ module.exports = class ResponseBuilder {
             headers: {
                 request: this.page.getRequestHeaders(),
                 response: this.page.getNotRenderedResponse().headers
+            },
+            urls: {
+                connected: this.page.getUrlsConnected(),
+                skipped: this.page.getUrlsSkipped()
             },
             response: {
                 cookies: this.page.getRenderedResponse().cookie,
@@ -43,6 +84,11 @@ module.exports = class ResponseBuilder {
         return this.response;
     }
 
+    /**
+     * @private
+     * 
+     * @returns {boolean}
+     */
     _hasShow() {
         let show = [];
 
@@ -88,6 +134,27 @@ module.exports = class ResponseBuilder {
                     this.response.headers = {};
 
                 this.response.headers.response = this.fullResponse.headers.response;
+                continue;
+            }
+
+            if (partShow == 'urls'){
+                this.response.urls = this.fullResponse.urls;
+                continue;
+            }
+
+            if (partShow == 'urls.connected'){
+                if (this.response.urls == undefined)
+                    this.response.urls = {};
+
+                this.response.urls.connected = this.fullResponse.urls.connected;
+                continue;
+            }
+
+            if (partShow == 'urls.skipped'){
+                if (this.response.urls == undefined)
+                    this.response.urls = {};
+
+                this.response.urls.skipped = this.fullResponse.urls.skipped;
                 continue;
             }
 

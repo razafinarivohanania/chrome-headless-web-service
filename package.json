@@ -1,22 +1,24 @@
 {
-  "name": "headless",
+  "name": "chrome-headless-web-service",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web service to communicate with Chromium based on Puppeter",
   "main": "index.js",
   "dependencies": {
     "compression": "^1.7.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "proxy-chain": "^0.2.4",
     "puppeteer": "^1.7.0"
-  },
-  "devDependencies": {
-    "jasmine": "^3.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "chrome",
+    "headless",
+    "web service",
+	"puppeter"
+    "RESTful"
+  ],
+  "author": "RAZAFINARIVO Hanania",
   "license": "ISC"
 }

@@ -1,0 +1,248 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Home</title>
+    <meta charset='utf-8' />
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid grey;
+        }
+
+        #content {
+            display: none;
+        }
+
+        .pre {
+            border:1px solid grey; 
+            overflow:auto;
+        }
+
+        .todo {
+	        color:red;
+        }
+    </style>
+</head>
+
+<body>
+    <noscript>Please enable javascript</noscript>
+    <div id='content'>
+        <h1>Welcome to documentation</h1>
+        <h2 id='overview'>1. Overview</h2>
+        <p>Concept of Chrome headless web service is relatively simple. As the image below shows. The Client send url
+            in
+            which it wants to connect on Chromium. Sometime, the client already has the page html content but needs
+            only to
+            render it on Chromium because of intern script. Then, the Chrome headless web service asks a browser to
+            load
+            the mentionned url or just rendered the page html with script. The browser responds the request and give
+            the
+            hand to Chrome headless web service. In turn, it gives the rendered page to client with other information
+            that
+            is called browser behavior (eg : status connection)</p>
+        <p>A global configuration file is stored on server. It will explained with more details later but to resume it
+            permits to Chrome headless web service to manage effectively alls instances of runned browsers.</p>
+        <p><img src='/images/overview.jpg' alt='overview' /></p>
+        <h2 id='input-output'>2. Client request</h2>
+        <p>Exchange information between Client and Chrome headless web service is defined by HTTP protocol. Each
+            request from Client must be a POST method. Its features is shown in the following table.</p>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+                <th>Mandatory</th>
+            </tr>
+            <tr>
+                <td>Target</td>
+                <td><a href='<%= connectionPath %>' id='connectionPath'></a></td>
+                <td>YES</td>
+            </tr>
+            <tr>
+                <td>Method</td>
+                <td>POST</td>
+                <td>YES</td>
+            </tr>
+            <tr>
+                <td>Parameters</td>
+                <td>JSON</td>
+                <td>YES</td>
+            </tr>
+            <tr>
+                <td>Header</td>
+                <td>Content-Type: application/json</td>
+                <td>YES</td>
+            </tr>
+        </table>
+        <p>The JSON parameters define client pending. The full skeleton is :</p>
+        <pre id='fullSkeletonJsonParameters' class='pre'></pre>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Mandatory</th>
+                <th>Value</th>
+                <th>Remark</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td>request.url</td>
+                <td>String</td>
+                <td>YES</td>
+                <td>The url to simulate on Chromium</td>
+                <td></td>
+                <td>http://www.google.com</td>
+            </tr>
+            <tr>
+                <td>request.method</td>
+                <td>String</td>
+                <td>YES</td>
+                <td>"GET" or "POST"</td>
+                <td>It is case insensitive. So "get" or "post" is valid too.</td>
+                <td>get</td>
+            </tr>
+            <tr>
+                <td>request.parameters</td>
+                <td>String</td>
+                <td>NO</td>
+                <td>Value of parameters</td>
+                <td>It must be a raw String. It is ignored on GET connection.</td>
+                <td>category=phone&nextPage=7</td>
+            </tr>
+            <tr>
+                <td>request.headers</td>
+                <td>Object</td>
+                <td>NO</td>
+                <td>Based on key value. Key is the name of header. Value is the value of header</td>
+                <td>There is no specified field for cookie. But you can add it on header.</td>
+                <td>
+                    <pre id='headersExample'></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>request.html</td>
+                <td>String</td>
+                <td>NO</td>
+                <td>Content html page to simulate</td>
+                <td></td>
+                <td>
+                    <pre id='htmlExample'></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>proxy.host</td>
+                <td>String</td>
+                <td>NO</td>
+                <td>Host of the proxy</td>
+                <td>It is not mandatory but really recommanded</td>
+                <td>proxy-out.workit.fr</td>
+            </tr>
+            <tr>
+                <td>proxy.port</td>
+                <td>String</td>
+                <td>NO</td>
+                <td>Port of the proxy</td>
+                <td>It is not mandatory but really recommanded</td>
+                <td>4000</td>
+            </tr>
+            <tr>
+                <td>skip.resources</td>
+                <td>Array of String</td>
+                <td>NO</td>
+                <td>"audio", "image", "video", "css" or "javascript"</td>
+                <td>It is not mandatory but really recommanded. It permits to avoid waste connection.</td>
+                <td>
+                    <pre>["audio", "image", "video", "css"]</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>skip.url.equals</td>
+                <td>Array of String</td>
+                <td>NO</td>
+                <td>Values of urls to be equals with original url</td>
+                <td></td>
+                <td>["http://www.google.com", "http://www.google.fr/"]</td>
+            </tr>
+        </table>
+        <div class='todo'>/!\ TODO</div>
+    </div>
+    
+    <script type='text/javascript' src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+    <script type='text/javascript'>
+        var getAbsoluteUrl = (function () {
+            var a;
+
+            return function (url) {
+                if (!a) a = document.createElement('a');
+                a.href = url;
+
+                return a.href;
+            };
+        })();
+
+        $('#connectionPath').text(getAbsoluteUrl($('#connectionPath').attr('href')));
+        $('#content').show();
+
+        var fullJsonParameters = JSON.stringify({
+            "request": {
+                "url": "",
+                "method": "",
+                "parameters": "",
+                "headers": {},
+                "html": ""
+            },
+            "proxy": {
+                "host": "",
+                "port": ""
+            },
+            "skip": {
+                "resources": [],
+                "url": {
+                    "equals": [],
+                    "equalsIgnoreCase": [],
+                    "contains": [],
+                    "containsIgnoreCase": [],
+                    "patterns": [],
+                    "function": ""
+                },
+                "maxConnection": 0
+            },
+            "allow": {
+                "resources": [],
+                "url": {
+                    "equals": [],
+                    "equalsIgnoreCase": [],
+                    "contains": [],
+                    "containsIgnoreCase": [],
+                    "patterns": [],
+                    "function": ""
+                }
+            },
+            "args": [],
+            "script": "",
+            "show": []
+        }, null, '  ');
+
+        $('#fullSkeletonJsonParameters').text(fullJsonParameters);
+
+        var headersExample = JSON.stringify({
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Host": "www.google.com",
+            "Cookie": "SID=dwaTGnJF7eTz8ocYJxbEybY0yB0Ej0E6G84J4lHSkRMEohQ_--ljf5rdb_8wNhvhoc1VXQ.;",
+            "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64)"
+        }, null, '  ');
+
+        $('#headersExample').text(headersExample);
+
+        var htmlExample = "<!doctype html>\n<html>\n\n<head>\n    <title>Page</title>\n    <meta charset='utf-8' />\n</head>\n\n<body>\n    <div id='welcome'>Welcome!</div>\n    <script type='text/javascript'>\n        document.getElementById('welcome').innerHTML = 'Hello world!';\n    <" + "/script>\n</body>\n\n</html>";
+        $('#htmlExample').text(htmlExample);
+    </script>
+</body>
+
+</html>

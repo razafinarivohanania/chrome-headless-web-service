@@ -1,0 +1,23 @@
+{
+    "browser": {
+        "maxInstances": 20,
+        "maxPages": 20,
+        "maxConnectionCountPerPage" : 1000,
+        "delayBeforeToClose": 30000,
+        "timeout": 120000,
+        "headless": true
+    },
+    "server": {
+        "port": 8080,
+        "paths": {
+            "home": "/",
+            "documentation": "/documentation",
+            "connection": "/connection",
+            "test": "/test"
+        },
+        "directoryTemporaryFile" : "files"
+    },
+    "request" : {
+        "maxPostParametersSize": "50mb"
+    }
+}

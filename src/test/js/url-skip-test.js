@@ -1,4 +1,4 @@
-const UrlSkip = require('../web/url-skip.js');
+const UrlSkip = require('../../main/js/url/url-skip');
 
 
 function testImage() {
@@ -80,34 +80,12 @@ function testEquals(){
 
 testEquals();
 
-function testEqualsIgnoreCase(){
-    const req = {
-        body: {
-            skip: {
-                url: {
-                    equalsIgnoreCase : [
-                        'https://www.google.com',
-                        'http://localhost'
-                    ]
-                }
-            }
-        }
-    };
-
-    if (new UrlSkip('http://LOCALHOST', req).isToSkip())
-        console.log('Equals ignore case OK');
-    else
-        throw new Error('To skip expected');
-}
-
-testEqualsIgnoreCase();
-
 function testContains(){
     const req = {
         body: {
             skip: {
                 url: {
-                    containsIgnoreCase : [
+                    contains : [
                         'www.google.com',
                         'localhost'
                     ]
@@ -123,28 +101,6 @@ function testContains(){
 }
 
 testContains();
-
-function testContainsIgnoreCase(){
-    const req = {
-        body: {
-            skip: {
-                url: {
-                    containsIgnoreCase : [
-                        'www.google.com',
-                        'localhost'
-                    ]
-                }
-            }
-        }
-    };
-
-    if (new UrlSkip('http://LOCALHOST', req).isToSkip())
-        console.log('Contains ignore case OK');
-    else
-        throw new Error('To skip expected');
-}
-
-testContainsIgnoreCase();
 
 function testPatterns(){
     const req = {
@@ -186,3 +142,22 @@ function testFunction(){
 }
 
 testFunction();
+
+function testCss(){
+    const req = {
+        body: {
+            skip:{
+                resources : [
+                    "css"
+                ]
+            }
+        }
+    }
+
+    if (new UrlSkip('http://www.pourmonbureau.com/media/css/a66ce8b44185dbe1051c4886499b0293.css', req).isToSkip())
+        console.log('CSS OK');
+    else
+        throw new Error('To skip expected');
+}
+
+testCss();

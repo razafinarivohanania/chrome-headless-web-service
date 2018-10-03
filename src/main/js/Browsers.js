@@ -1,14 +1,41 @@
+'use strict';
+
 const urlFromRequire = require('url');
 
-const configuration = require('../configuration-loader.js');
-const Browser = require('./browser.js');
+const configuration = require('./configuration-loader');
+const Browser = require('./Browser');
+const Args = require('./Args');
 
+/**
+ * Manage all instances of browsers
+ * 
+ * @class
+ */
 module.exports = class Browsers {
 
+    /**
+     * Constructor does not need parameter
+     * 
+     * @public
+     * 
+     * @constructor
+     * 
+     * @returns {Browsers}
+     */
     constructor() {
         this.browsers = new Map();
     }
 
+    /**
+     * Load browser which responds the same args from request parameters
+     * Otherwise attempts to create new instance of browser
+     * 
+     * @public
+     * 
+     * @param {Request} req
+     * 
+     * @returns {Browser}
+     */
     loadBrowser(req) {
         this._closeBrowserToClose();
         
@@ -20,6 +47,13 @@ module.exports = class Browsers {
             browser;
     }
 
+    /**
+     * @private
+     * 
+     * @param {Request} req 
+     * 
+     * @returns {string}
+     */
     _buildIdBrowser(req) {
         let url = null;
         try {
@@ -35,9 +69,18 @@ module.exports = class Browsers {
         if (hostname == null)
             throw new Error('request.url on JSON parameters is malformed');
 
-        return hostname;
+        const args = new Args(req).getArgs();
+        args.sort();
+        return hostname + args.join('-');
     }
 
+    /**
+     * @private
+     * 
+     * @param {string} idBrowser 
+     * 
+     * @returns {Browser}
+     */
     _createBrowser(idBrowser) {
         if (this.browsers.size >= configuration.browser.maxInstances)
             throw new Error(`Max instances browsers [${this.browsers.size}] reached.`);
@@ -47,11 +90,16 @@ module.exports = class Browsers {
         return browser;
     }
 
+    /**
+     * @private
+     * 
+     * @returns {undefined}
+     */
     _closeBrowserToClose() {
         const ids = [];
 
         this.browsers.forEach((browser, id) => {
-            if (browser.isToClose && !browser.isAgainUsed) {
+            if (browser.isToClose && browser.pagesCounter == 0) {
                 browser.close();
                 ids.push(id);
             }
